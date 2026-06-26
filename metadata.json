@@ -1,0 +1,6 @@
+{
+  "name": "Android AI Agent",
+  "description": "An AI assistant that can control the phone using Accessibility and MediaProjection permissions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

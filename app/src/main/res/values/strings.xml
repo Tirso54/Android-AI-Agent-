@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Android AI Agent</string>
+    <string name="accessibility_service_description">This service allows the AI Agent to control your phone to perform tasks on your behalf.</string>
+</resources>
