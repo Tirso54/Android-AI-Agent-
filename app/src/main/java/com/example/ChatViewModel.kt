@@ -49,10 +49,18 @@ class ChatViewModel : ViewModel() {
         
         viewModelScope.launch {
             // Determine if the user is asking for a complex plan or just chatting
-            val isComplexTask = userText.contains("open", ignoreCase = true) || 
-                                userText.contains("play", ignoreCase = true) ||
-                                userText.contains("search", ignoreCase = true) ||
-                                userText.contains("minecraft", ignoreCase = true)
+            val lowerText = userText.lowercase()
+            val isComplexTask = lowerText.contains("open") || 
+                                lowerText.contains("play") ||
+                                lowerText.contains("search") ||
+                                lowerText.contains("minecraft") ||
+                                lowerText.contains("abre") ||
+                                lowerText.contains("juega") ||
+                                lowerText.contains("busca") ||
+                                lowerText.contains("haz") ||
+                                lowerText.contains("entra") ||
+                                lowerText.contains("dale") ||
+                                lowerText.contains("inicia")
             
             val responseText = if (isComplexTask) {
                 // Use High Thinking Planner

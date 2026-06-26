@@ -8,12 +8,19 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AgentAccessibilityService : AccessibilityService() {
 
     companion object {
         private const val TAG = "AgentAccessibility"
+        
+        private val _isServiceConnected = MutableStateFlow(false)
+        val isServiceConnected: StateFlow<Boolean> = _isServiceConnected.asStateFlow()
+        
         var instance: AgentAccessibilityService? = null
             private set
     }
@@ -22,6 +29,7 @@ class AgentAccessibilityService : AccessibilityService() {
         super.onServiceConnected()
         Log.d(TAG, "Service connected")
         instance = this
+        _isServiceConnected.value = true
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -35,6 +43,7 @@ class AgentAccessibilityService : AccessibilityService() {
     override fun onDestroy() {
         super.onDestroy()
         instance = null
+        _isServiceConnected.value = false
     }
 
     fun performClick(x: Float, y: Float) {

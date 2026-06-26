@@ -34,7 +34,15 @@ class AgentPlanner {
                 apiKey = apiKey,
                 request = request
             )
-            response.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.text ?: "No plan generated."
+            val text = response.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.text
+            if (text != null) {
+                text
+            } else {
+                "No plan generated. The model returned an empty response. (Response size: ${response.candidates?.size})"
+            }
+        } catch (e: retrofit2.HttpException) {
+            val errorBody = e.response()?.errorBody()?.string() ?: "No error body"
+            "API Error: ${e.code()} - ${e.message()}\nDetails: $errorBody"
         } catch (e: Exception) {
             "Error generating plan: ${e.message}"
         }
@@ -42,6 +50,10 @@ class AgentPlanner {
     
     suspend fun chat(history: List<Content>, userMessage: String): String = withContext(Dispatchers.IO) {
         val apiKey = BuildConfig.GEMINI_API_KEY
+        if (apiKey.isEmpty() || apiKey.contains("MY_GEMINI_API_KEY")) {
+            return@withContext "Error: Please configure your Gemini API Key in the AI Studio Settings."
+        }
+        
         val newContents = history.toMutableList().apply {
             add(Content(role = "user", parts = listOf(Part(text = userMessage))))
         }
@@ -59,7 +71,15 @@ class AgentPlanner {
                 apiKey = apiKey,
                 request = request
             )
-            response.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.text ?: "No response."
+            val text = response.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.text
+            if (text != null) {
+                text
+            } else {
+                "No response from Gemini API. It might have been blocked by safety settings or returned an empty response. (Response size: ${response.candidates?.size})"
+            }
+        } catch (e: retrofit2.HttpException) {
+            val errorBody = e.response()?.errorBody()?.string() ?: "No error body"
+            "API Error: ${e.code()} - ${e.message()}\nDetails: $errorBody"
         } catch (e: Exception) {
             "Error: ${e.message}"
         }
